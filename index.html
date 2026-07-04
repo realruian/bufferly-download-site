@@ -1749,5 +1749,18 @@
         </div>
       </footer>
     </main>
+    <script>
+      const faqItems = Array.from(document.querySelectorAll(".faq-list details"));
+      faqItems.forEach((item) => {
+        item.querySelector("summary").addEventListener("click", () => {
+          if (item.open) return;
+          faqItems.forEach((other) => {
+            if (other !== item) {
+              other.open = false;
+            }
+          });
+        });
+      });
+    </script>
   </body>
 </html>

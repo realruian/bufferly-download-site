@@ -890,17 +890,17 @@
       }
 
       .cta-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 30px;
+        display: flex;
+        justify-content: center;
       }
 
       .cta-copy {
+        width: min(520px, 100%);
         padding-top: 42px;
       }
 
       .cta-list {
-        width: min(420px, 100%);
+        width: 100%;
         margin-top: 34px;
         display: flex;
         flex-direction: column;
@@ -924,14 +924,6 @@
         margin-right: 12px;
         background: #000;
         border-radius: 50%;
-      }
-
-      .cta-panel {
-        min-height: 520px;
-        border: 1px solid var(--line);
-        background:
-          linear-gradient(#fdfdfd, #fdfdfd) padding-box,
-          repeating-linear-gradient(90deg, transparent 0 38px, rgba(0, 0, 0, 0.025) 38px 39px) border-box;
       }
 
       .footer {
@@ -1376,10 +1368,6 @@
           padding-top: 0;
         }
 
-        .cta-panel {
-          min-height: 360px;
-        }
-
         .footer {
           min-height: 640px;
         }
@@ -1720,7 +1708,6 @@
               <span>快捷键呼出，回车粘贴</span>
             </div>
           </div>
-          <div class="cta-panel" aria-hidden="true"></div>
         </div>
       </section>
 

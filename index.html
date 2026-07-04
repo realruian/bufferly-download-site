@@ -1,0 +1,1757 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Bufferly</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='black'/%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Fragment+Mono&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
+    <style>
+      :root {
+        --bg: #fdfdfd;
+        --ink: #000;
+        --muted: #545454;
+        --soft: #7d7d7d;
+        --line: #eeeeee;
+        --line-strong: #dedede;
+        --panel: #f8f8f8;
+        --sans: "Google Sans Flex Variable", "Inter", "Helvetica Neue", Arial, sans-serif;
+        --serif: "Instrument Serif", Georgia, serif;
+        --mono: "Fragment Mono", "SFMono-Regular", Consolas, monospace;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font-family: var(--sans);
+        font-size: 14px;
+        letter-spacing: 0;
+      }
+
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      p,
+      h1,
+      h2,
+      h3 {
+        margin: 0;
+      }
+
+      .site {
+        width: min(1300px, calc(100% - 140px));
+        margin: 0 auto;
+        border-left: 1px solid var(--line);
+        border-right: 1px solid var(--line);
+        overflow: hidden;
+        background: var(--bg);
+      }
+
+      .topbar {
+        position: fixed;
+        inset: 0 0 auto;
+        z-index: 20;
+        height: 70px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        pointer-events: none;
+      }
+
+      .nav {
+        display: flex;
+        gap: 18px;
+        align-items: center;
+        justify-content: center;
+        pointer-events: auto;
+      }
+
+      .nav a {
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        height: 30px;
+        color: var(--muted);
+        font-size: 14px;
+        line-height: 22.4px;
+        transition: color 180ms ease;
+      }
+
+      .nav a::before {
+        content: "[";
+        color: #636363;
+        font-size: 13px;
+      }
+
+      .nav a::after {
+        content: "]";
+        color: #636363;
+        font-size: 13px;
+      }
+
+      .nav a:hover {
+        color: #000;
+      }
+
+      .mobile-bar {
+        display: none;
+      }
+
+      .section {
+        position: relative;
+        width: 100%;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .section-inner {
+        width: min(1180px, 100%);
+        margin: 0 auto;
+        padding: 50px 28px;
+      }
+
+      .center-head {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 5px;
+        text-align: center;
+      }
+
+      .center-head h2,
+      .center-head h3 {
+        width: 100%;
+        font-family: var(--sans);
+        font-size: 44px;
+        font-weight: 400;
+        line-height: 52.8px;
+      }
+
+      .center-head p {
+        width: min(400px, 100%);
+        color: var(--muted);
+        font-size: 14px;
+        line-height: 22.4px;
+        letter-spacing: 0.14px;
+      }
+
+      .label-pill {
+        display: inline-flex;
+        align-items: center;
+        height: 21px;
+        padding: 0 8px;
+        background: #000;
+        color: #fff;
+        font-size: 13px;
+        line-height: 20.8px;
+      }
+
+      .hero {
+        min-height: 906px;
+        padding-top: 120px;
+      }
+
+      .hero .section-inner {
+        padding-top: 0;
+        padding-bottom: 0;
+      }
+
+      .hero h1 {
+        font-family: var(--serif);
+        font-size: 54px;
+        font-weight: 400;
+        line-height: 64.8px;
+        text-align: center;
+      }
+
+      .hero-copy {
+        width: min(360px, 100%);
+        margin: 5px auto 0;
+        color: var(--muted);
+        font-size: 14px;
+        line-height: 22.4px;
+        text-align: center;
+        letter-spacing: 0.14px;
+      }
+
+      .hero-actions {
+        display: flex;
+        justify-content: center;
+        gap: 6px;
+        margin-top: 14px;
+      }
+
+      .button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 30px;
+        padding: 0 13px;
+        border: 1px solid #d8d8d8;
+        border-radius: 999px;
+        background: #fff;
+        color: #111;
+        font-size: 12px;
+        line-height: 1;
+        transition: transform 180ms ease, background 180ms ease, color 180ms ease;
+      }
+
+      .button.dark {
+        border-color: #000;
+        background: #000;
+        color: #fff;
+      }
+
+      .button:hover {
+        transform: translateY(-1px);
+      }
+
+      .butterfly-frame {
+        position: relative;
+        width: min(1120px, 100%);
+        height: 520px;
+        margin: 42px auto 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .corner {
+        position: absolute;
+        width: 27px;
+        height: 27px;
+        border-color: #9a9a9a;
+        opacity: 0.72;
+      }
+
+      .corner.tl {
+        top: 10px;
+        left: 45px;
+        border-top: 1px solid;
+        border-left: 1px solid;
+      }
+
+      .corner.tr {
+        top: 10px;
+        right: 45px;
+        border-top: 1px solid;
+        border-right: 1px solid;
+      }
+
+      .corner.bl {
+        bottom: 16px;
+        left: 45px;
+        border-bottom: 1px solid;
+        border-left: 1px solid;
+      }
+
+      .corner.br {
+        right: 45px;
+        bottom: 16px;
+        border-right: 1px solid;
+        border-bottom: 1px solid;
+      }
+
+      .butterfly {
+        position: relative;
+        width: 690px;
+        height: 390px;
+        color: #9f9f9f;
+        font-family: var(--mono);
+        font-size: 11px;
+        line-height: 0.92;
+        letter-spacing: 1.25px;
+        text-align: center;
+        white-space: pre;
+        transform: rotate(-4deg);
+        filter: blur(0.08px);
+        opacity: 0.9;
+      }
+
+      .butterfly::before,
+      .butterfly::after {
+        content: "";
+        position: absolute;
+        top: 42px;
+        width: 230px;
+        height: 300px;
+        border-radius: 50%;
+        background:
+          repeating-linear-gradient(2deg, rgba(0, 0, 0, 0.13) 0 1px, transparent 1px 8px),
+          radial-gradient(circle at 60% 50%, rgba(0, 0, 0, 0.08), transparent 64%);
+        mask-image: radial-gradient(ellipse at center, #000 42%, transparent 70%);
+        opacity: 0.36;
+      }
+
+      .butterfly::before {
+        left: 42px;
+        transform: skewY(16deg) rotate(-22deg);
+      }
+
+      .butterfly::after {
+        right: 42px;
+        transform: skewY(-16deg) rotate(22deg);
+      }
+
+      .butterfly pre {
+        position: relative;
+        z-index: 1;
+        margin: 0;
+        font: inherit;
+        transform: scaleX(1.18);
+      }
+
+      .hero-product-shot {
+        width: min(920px, calc(100% - 96px));
+        height: auto;
+        display: block;
+      }
+
+      .trusted {
+        min-height: 166px;
+      }
+
+      .trusted .section-inner {
+        padding-top: 46px;
+        padding-bottom: 44px;
+        text-align: center;
+      }
+
+      .trusted-title {
+        margin-bottom: 30px;
+        color: #6c6c6c;
+        font-size: 13px;
+        line-height: 20.8px;
+      }
+
+      .logos {
+        display: flex;
+        justify-content: center;
+        gap: 42px;
+        color: #555;
+        font-size: 13px;
+        line-height: 20.8px;
+        opacity: 0.76;
+      }
+
+      .logo-word {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        white-space: nowrap;
+      }
+
+      .logo-dot {
+        width: 12px;
+        height: 12px;
+        display: inline-block;
+        border: 1px solid #696969;
+        border-radius: 50%;
+      }
+
+      .intersection {
+        min-height: 785px;
+      }
+
+      .intersection .section-inner {
+        padding-top: 84px;
+        padding-bottom: 0;
+      }
+
+      .touch-scene {
+        position: relative;
+        height: 470px;
+        margin-top: 72px;
+      }
+
+      .ai-stream {
+        position: absolute;
+        left: -90px;
+        top: 105px;
+        width: 560px;
+        height: 150px;
+        background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.28) 0%, rgba(0, 0, 0, 0.18) 35%, transparent 70%);
+        filter: blur(14px);
+        transform: rotate(11deg);
+        opacity: 0.64;
+      }
+
+      .floating-clip-card {
+        position: absolute;
+        left: 172px;
+        top: 74px;
+        width: 230px;
+        height: auto;
+        z-index: 2;
+        display: block;
+      }
+
+      .star {
+        position: absolute;
+        left: 44%;
+        top: 128px;
+        width: 88px;
+        height: 88px;
+        background: #2b2b2b;
+        clip-path: polygon(50% 0, 61% 37%, 100% 50%, 61% 63%, 50% 100%, 39% 63%, 0 50%, 39% 37%);
+        filter: blur(10px);
+        opacity: 0.38;
+      }
+
+      .hand {
+        position: absolute;
+        right: -90px;
+        top: 60px;
+        width: 670px;
+        max-width: 56vw;
+        filter: grayscale(1) contrast(1.12);
+        opacity: 0.66;
+      }
+
+      .ai-caption {
+        position: absolute;
+        left: 22%;
+        bottom: 48px;
+        color: var(--muted);
+        font-size: 14px;
+        line-height: 22.4px;
+      }
+
+      .capabilities {
+        min-height: 1102px;
+      }
+
+      .capabilities .section-inner {
+        padding-top: 50px;
+      }
+
+      .feature-grid {
+        width: min(900px, 100%);
+        margin: 30px auto 0;
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        border-top: 1px solid var(--line-strong);
+        border-left: 1px solid var(--line-strong);
+      }
+
+      .feature-card {
+        position: relative;
+        min-height: 410px;
+        border-right: 1px solid var(--line-strong);
+        border-bottom: 1px solid var(--line-strong);
+        overflow: hidden;
+        background: #fdfdfd;
+      }
+
+      .feature-art {
+        position: absolute;
+        inset: 42px 34px auto;
+        height: 250px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: var(--mono);
+        font-size: 23px;
+        line-height: 0.86;
+        white-space: pre;
+        text-align: center;
+        filter: blur(0.35px);
+        opacity: 0.83;
+      }
+
+      .feature-card::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 150px;
+        background: linear-gradient(rgba(255, 255, 255, 0), rgba(253, 253, 253, 0.96) 72%, #fdfdfd);
+        pointer-events: none;
+      }
+
+      .feature-copy {
+        position: absolute;
+        z-index: 1;
+        left: 28px;
+        right: 28px;
+        bottom: 34px;
+      }
+
+      .feature-copy h3 {
+        margin-bottom: 8px;
+        font-size: 14px;
+        font-weight: 600;
+        line-height: 18px;
+      }
+
+      .feature-copy p {
+        max-width: 310px;
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 20px;
+        letter-spacing: 0;
+      }
+
+      .cyan {
+        color: #07baff;
+        text-shadow: 0 0 18px rgba(0, 187, 255, 0.55);
+      }
+
+      .magenta {
+        color: #ff30d7;
+        text-shadow: 0 0 18px rgba(255, 48, 215, 0.6);
+      }
+
+      .mint {
+        color: #43e1c4;
+        text-shadow: 0 0 18px rgba(67, 225, 196, 0.58);
+      }
+
+      .amber {
+        color: #ffbe34;
+        text-shadow: 0 0 18px rgba(255, 190, 52, 0.56);
+      }
+
+      .ecosystem {
+        min-height: 1400px;
+      }
+
+      .ecosystem .section-inner {
+        height: 100%;
+        min-height: 1400px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+
+      .ecosystem-map {
+        position: relative;
+        height: 640px;
+        margin-top: 70px;
+      }
+
+      .orbit-label {
+        position: absolute;
+        color: #555;
+        font-size: 13px;
+        line-height: 20.8px;
+      }
+
+      .orbit-label::before {
+        content: "";
+        display: inline-block;
+        width: 5px;
+        height: 5px;
+        margin-right: 7px;
+        background: #000;
+        vertical-align: 1px;
+      }
+
+      .orbit-label:nth-child(1) {
+        left: 26%;
+        top: 42%;
+      }
+
+      .orbit-label:nth-child(2) {
+        left: 47%;
+        top: 50%;
+      }
+
+      .orbit-label:nth-child(3) {
+        right: 21%;
+        top: 36%;
+      }
+
+      .orbit-label:nth-child(4) {
+        left: 34%;
+        bottom: 26%;
+      }
+
+      .ecosystem-glow {
+        position: absolute;
+        inset: 25% 20%;
+        border: 1px solid rgba(0, 0, 0, 0.05);
+        border-radius: 50%;
+        filter: blur(0.2px);
+      }
+
+      .tiers {
+        min-height: 1469px;
+      }
+
+      .tiers .section-inner {
+        padding-top: 50px;
+      }
+
+      .tier-stack {
+        position: relative;
+        width: min(900px, 100%);
+        margin: 30px auto 0;
+        display: flex;
+        flex-direction: column;
+        gap: 144px;
+      }
+
+      .tier-row {
+        position: relative;
+        width: 84%;
+        min-height: 308px;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 24px;
+        padding: 28px;
+        background: #fdfdfd;
+      }
+
+      .tier-row:nth-child(odd) {
+        margin-left: auto;
+      }
+
+      .tier-row::before {
+        content: attr(data-tier);
+        position: absolute;
+        top: -18px;
+        left: 0;
+        color: #444;
+        font-size: 13px;
+        line-height: 20px;
+      }
+
+      .tier-row::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100px;
+        width: 100px;
+        height: 2px;
+        background: linear-gradient(270deg, #bdbdbd, #000);
+      }
+
+      .tier-row:nth-child(even)::after {
+        left: auto;
+        right: -100px;
+        background: linear-gradient(90deg, #bdbdbd, #000);
+      }
+
+      .tier-main {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+      }
+
+      .tier-main h3 {
+        margin: 12px 0;
+        font-size: 24px;
+        font-weight: 400;
+        line-height: 30px;
+      }
+
+      .tier-main p {
+        width: min(290px, 100%);
+        color: var(--muted);
+        font-size: 14px;
+        line-height: 22.4px;
+      }
+
+      .price {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-top: 28px;
+        font-size: 24px;
+        line-height: 30px;
+      }
+
+      .price small {
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      .checklist {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        justify-content: center;
+      }
+
+      .checklist span {
+        display: flex;
+        min-height: 56px;
+        align-items: center;
+        border-bottom: 1px solid var(--line);
+        color: var(--muted);
+        font-size: 14px;
+        line-height: 20px;
+      }
+
+      .checklist span::before {
+        content: "";
+        width: 7px;
+        height: 7px;
+        margin-right: 12px;
+        background: #000;
+        border-radius: 50%;
+        flex: 0 0 auto;
+      }
+
+      .outcomes {
+        min-height: 1080px;
+      }
+
+      .outcomes .center-head {
+        gap: 10px;
+      }
+
+      .case-grid {
+        width: 100%;
+        margin-top: 30px;
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 30px;
+      }
+
+      .case-card {
+        min-height: 300px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        padding: 28px;
+        border-left: 1px solid var(--line);
+        transition: transform 180ms ease;
+      }
+
+      .case-card:hover {
+        transform: translateY(-2px);
+      }
+
+      .case-card h3,
+      .highlight-copy h3 {
+        font-size: 16px;
+        font-weight: 600;
+        line-height: 20px;
+      }
+
+      .case-card p,
+      .highlight-copy p {
+        margin-top: 14px;
+        color: var(--muted);
+        font-size: 14px;
+        line-height: 22.4px;
+      }
+
+      .person {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-top: 26px;
+      }
+
+      .person img {
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        object-fit: cover;
+        filter: grayscale(1);
+      }
+
+      .person strong {
+        display: block;
+        font-size: 14px;
+        font-weight: 600;
+        line-height: 18px;
+      }
+
+      .person small {
+        display: block;
+        margin-top: 3px;
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      .case-highlight {
+        margin-top: 44px;
+        min-height: 360px;
+        display: grid;
+        grid-template-columns: 370px 1fr;
+        border: 1px solid var(--line);
+      }
+
+      .highlight-image {
+        min-height: 360px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-right: 1px solid var(--line);
+      }
+
+      .highlight-image img {
+        width: 300px;
+        height: 300px;
+        object-fit: cover;
+        filter: grayscale(1);
+      }
+
+      .highlight-copy {
+        padding: 54px 56px;
+      }
+
+      .faq {
+        min-height: 626px;
+      }
+
+      .faq-grid {
+        display: grid;
+        grid-template-columns: 1fr 1.05fr;
+        gap: 88px;
+      }
+
+      .faq-title h2,
+      .cta-copy h2 {
+        font-size: 44px;
+        font-weight: 400;
+        line-height: 52.8px;
+      }
+
+      .faq-title p,
+      .cta-copy p {
+        width: min(410px, 100%);
+        margin-top: 16px;
+        color: var(--muted);
+        font-size: 14px;
+        line-height: 22.4px;
+      }
+
+      .email-link {
+        display: inline-flex;
+        margin-top: 160px;
+        padding: 4px 8px;
+        background: #000;
+        color: #fff;
+        font-size: 13px;
+      }
+
+      .faq-list {
+        border-top: 1px solid var(--line);
+      }
+
+      details {
+        border-bottom: 1px solid var(--line);
+      }
+
+      summary {
+        min-height: 66px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        cursor: pointer;
+        color: #111;
+        font-size: 14px;
+        line-height: 20px;
+        list-style: none;
+      }
+
+      summary::-webkit-details-marker {
+        display: none;
+      }
+
+      summary::after {
+        content: "+";
+        color: var(--muted);
+        font-size: 18px;
+      }
+
+      details[open] summary::after {
+        content: "−";
+      }
+
+      details p {
+        margin: -6px 0 22px;
+        color: var(--muted);
+        font-size: 14px;
+        line-height: 22.4px;
+      }
+
+      .cta {
+        min-height: 690px;
+      }
+
+      .cta-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 30px;
+      }
+
+      .cta-copy {
+        padding-top: 42px;
+      }
+
+      .cta-list {
+        width: min(420px, 100%);
+        margin-top: 34px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .cta-list span {
+        min-height: 52px;
+        display: flex;
+        align-items: center;
+        padding: 0 16px;
+        background: #f6f6f6;
+        color: #333;
+        font-size: 13px;
+      }
+
+      .cta-list span::before {
+        content: "";
+        width: 7px;
+        height: 7px;
+        margin-right: 12px;
+        background: #000;
+        border-radius: 50%;
+      }
+
+      .cta-panel {
+        min-height: 520px;
+        border: 1px solid var(--line);
+        background:
+          linear-gradient(#fdfdfd, #fdfdfd) padding-box,
+          repeating-linear-gradient(90deg, transparent 0 38px, rgba(0, 0, 0, 0.025) 38px 39px) border-box;
+      }
+
+      .footer {
+        min-height: 736px;
+        border-bottom: 0;
+      }
+
+      .footer .section-inner {
+        position: relative;
+        min-height: 736px;
+        display: grid;
+        grid-template-columns: 1fr 190px 230px;
+        gap: 60px;
+        padding-top: 98px;
+      }
+
+      .footer-brand h3 {
+        font-size: 15px;
+        font-weight: 600;
+        line-height: 20px;
+      }
+
+      .footer-brand p {
+        width: 270px;
+        margin-top: 18px;
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 20px;
+      }
+
+      .footer-list h4 {
+        margin: 0 0 18px;
+        font-size: 13px;
+        font-weight: 600;
+      }
+
+      .footer-list a {
+        display: block;
+        margin-bottom: 10px;
+        color: #555;
+        font-size: 13px;
+        line-height: 20px;
+      }
+
+      .footer-list a::before {
+        content: "[ ";
+      }
+
+      .footer-list a::after {
+        content: " ]";
+      }
+
+      .socials {
+        position: absolute;
+        left: 28px;
+        bottom: 76px;
+        display: flex;
+        gap: 8px;
+      }
+
+      .socials span {
+        width: 16px;
+        height: 16px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid #bcbcbc;
+        border-radius: 50%;
+        color: #555;
+        font-size: 10px;
+      }
+
+      .copyright {
+        position: absolute;
+        left: 28px;
+        bottom: 44px;
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      .footer-mark {
+        position: absolute;
+        left: 46%;
+        bottom: 10px;
+        width: 260px;
+        height: 310px;
+        opacity: 0.42;
+      }
+
+      .footer-mark::before {
+        content: "";
+        position: absolute;
+        left: 84px;
+        top: 0;
+        width: 92px;
+        height: 92px;
+        background: #101010;
+        clip-path: polygon(50% 0, 61% 37%, 100% 50%, 61% 63%, 50% 100%, 39% 63%, 0 50%, 39% 37%);
+        filter: blur(10px);
+      }
+
+      .footer-mark::after {
+        content: "";
+        position: absolute;
+        left: 40px;
+        top: 92px;
+        width: 180px;
+        height: 210px;
+        background: radial-gradient(ellipse at top, rgba(0, 0, 0, 0.42), transparent 70%);
+        filter: blur(18px);
+        transform: rotate(20deg);
+      }
+
+      .framer-badge {
+        position: fixed;
+        right: 14px;
+        top: 48vh;
+        z-index: 15;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 8px;
+        border: 1px solid #dcdcdc;
+        border-radius: 999px;
+        background: #fff;
+        box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
+        color: #111;
+        font-size: 12px;
+      }
+
+      .framer-badge::before {
+        content: "";
+        width: 10px;
+        height: 10px;
+        background: #000;
+        border-radius: 2px;
+      }
+
+      @media (max-width: 900px) {
+        .site {
+          width: 100%;
+          border-left: 0;
+          border-right: 0;
+        }
+
+        .topbar {
+          justify-content: space-between;
+          padding: 0 14px;
+          pointer-events: auto;
+        }
+
+        .nav {
+          display: none;
+        }
+
+        .mobile-bar {
+          width: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+        }
+
+        .mobile-icon {
+          width: 12px;
+          height: 12px;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          color: #000;
+          font-size: 14px;
+          line-height: 1;
+        }
+
+        .mobile-icon:first-child {
+          background: #000;
+        }
+
+        .section-inner {
+          padding: 44px 18px;
+        }
+
+        .hero {
+          min-height: 620px;
+          padding-top: 72px;
+        }
+
+        .hero h1 {
+          font-size: 34px;
+          line-height: 40.8px;
+        }
+
+        .hero-copy,
+        .center-head p,
+        .faq-title p,
+        .cta-copy p {
+          font-size: 12px;
+          line-height: 19.2px;
+        }
+
+        .hero-actions {
+          margin-top: 10px;
+        }
+
+        .button {
+          min-height: 26px;
+          padding: 0 11px;
+          font-size: 11px;
+        }
+
+        .butterfly-frame {
+          height: 300px;
+          margin-top: 28px;
+        }
+
+        .hero-product-shot {
+          width: calc(100% - 56px);
+        }
+
+        .butterfly {
+          width: 330px;
+          height: 220px;
+          font-size: 5.5px;
+          letter-spacing: 0.45px;
+        }
+
+        .butterfly::before,
+        .butterfly::after {
+          top: 34px;
+          width: 118px;
+          height: 164px;
+        }
+
+        .corner.tl,
+        .corner.bl {
+          left: 22px;
+        }
+
+        .corner.tr,
+        .corner.br {
+          right: 22px;
+        }
+
+        .trusted {
+          min-height: 116px;
+        }
+
+        .trusted .section-inner {
+          padding-top: 24px;
+          padding-bottom: 24px;
+        }
+
+        .trusted-title {
+          margin-bottom: 18px;
+          font-size: 10px;
+        }
+
+        .logos {
+          gap: 20px;
+          overflow: hidden;
+          justify-content: flex-start;
+          padding-left: 12px;
+          font-size: 10px;
+        }
+
+        .center-head h2,
+        .center-head h3,
+        .faq-title h2,
+        .cta-copy h2 {
+          font-size: 28px;
+          line-height: 33.6px;
+        }
+
+        .intersection {
+          min-height: 570px;
+        }
+
+        .intersection .section-inner {
+          padding-top: 62px;
+        }
+
+        .touch-scene {
+          height: 330px;
+          margin-top: 36px;
+        }
+
+        .ai-stream {
+          left: -140px;
+          top: 100px;
+          width: 320px;
+          height: 85px;
+        }
+
+        .floating-clip-card {
+          left: 28px;
+          top: 82px;
+          width: 116px;
+        }
+
+        .star {
+          left: 30%;
+          top: 116px;
+          width: 58px;
+          height: 58px;
+        }
+
+        .hand {
+          right: -170px;
+          top: 86px;
+          width: 430px;
+          max-width: none;
+        }
+
+        .ai-caption {
+          left: 28px;
+          bottom: 28px;
+          font-size: 11px;
+        }
+
+        .capabilities {
+          min-height: auto;
+        }
+
+        .feature-grid {
+          grid-template-columns: 1fr;
+          width: 100%;
+        }
+
+        .feature-card {
+          min-height: 360px;
+        }
+
+        .feature-art {
+          height: 220px;
+          font-size: 18px;
+        }
+
+        .ecosystem {
+          min-height: 850px;
+        }
+
+        .ecosystem .section-inner {
+          min-height: 850px;
+        }
+
+        .ecosystem-map {
+          height: 480px;
+        }
+
+        .orbit-label {
+          font-size: 11px;
+        }
+
+        .tiers {
+          min-height: auto;
+        }
+
+        .tier-stack {
+          gap: 28px;
+        }
+
+        .tier-row,
+        .tier-row:nth-child(odd) {
+          width: 100%;
+          margin-left: 0;
+          min-height: auto;
+          grid-template-columns: 1fr;
+          padding: 22px 0;
+          border-top: 1px solid var(--line);
+        }
+
+        .tier-row::after {
+          display: none;
+        }
+
+        .price {
+          font-size: 21px;
+        }
+
+        .checklist span {
+          min-height: 44px;
+          font-size: 12px;
+        }
+
+        .case-grid,
+        .faq-grid,
+        .cta-grid,
+        .case-highlight {
+          grid-template-columns: 1fr;
+        }
+
+        .outcomes {
+          min-height: auto;
+        }
+
+        .case-grid {
+          gap: 0;
+        }
+
+        .case-card {
+          min-height: 270px;
+          padding: 24px 0;
+          border-left: 0;
+          border-top: 1px solid var(--line);
+        }
+
+        .case-highlight {
+          margin-top: 20px;
+        }
+
+        .highlight-image {
+          min-height: 260px;
+          border-right: 0;
+          border-bottom: 1px solid var(--line);
+        }
+
+        .highlight-image img {
+          width: 220px;
+          height: 220px;
+        }
+
+        .highlight-copy {
+          padding: 26px 0;
+        }
+
+        .faq {
+          min-height: auto;
+        }
+
+        .faq-grid {
+          gap: 40px;
+        }
+
+        .email-link {
+          margin-top: 46px;
+        }
+
+        .cta {
+          min-height: auto;
+        }
+
+        .cta-copy {
+          padding-top: 0;
+        }
+
+        .cta-panel {
+          min-height: 360px;
+        }
+
+        .footer {
+          min-height: 640px;
+        }
+
+        .footer .section-inner {
+          min-height: 640px;
+          grid-template-columns: 1fr;
+          gap: 26px;
+          padding-top: 54px;
+        }
+
+        .footer-brand p {
+          width: 240px;
+        }
+
+        .footer-mark {
+          left: 28%;
+          bottom: -40px;
+          transform: scale(0.72);
+        }
+
+        .framer-badge {
+          display: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="topbar" aria-label="Main navigation">
+      <nav class="nav">
+        <a href="#about">信任系统</a>
+        <a href="#pricing">工作流</a>
+        <a href="#case-studies">隐私</a>
+        <a href="#contact">下载</a>
+      </nav>
+      <div class="mobile-bar" aria-hidden="true">
+        <span class="mobile-icon"></span>
+        <span class="mobile-icon">×</span>
+      </div>
+    </header>
+
+    <a class="framer-badge" href="https://www.framer.com/" target="_blank" rel="noreferrer">Bufferly beta</a>
+
+    <main class="site">
+      <section class="section hero" id="about">
+        <div class="section-inner">
+          <h1>本地优先的剪贴板工作台</h1>
+          <p class="hero-copy">为开发者和 AI 工作流保存、搜索、复用代码片段、命令、URL、JSON 和 prompt。</p>
+          <div class="hero-actions">
+            <a class="button" href="#features">为什么需要？</a>
+            <a class="button dark" href="assets/Bufferly.dmg" download="Bufferly.dmg">下载试用</a>
+          </div>
+
+          <div class="butterfly-frame" aria-hidden="true">
+            <span class="corner tl"></span>
+            <span class="corner tr"></span>
+            <span class="corner bl"></span>
+            <span class="corner br"></span>
+            <img class="hero-product-shot" src="assets/bufferly-clipboard-panel.png" alt="" />
+          </div>
+        </div>
+      </section>
+
+      <section class="section trusted" aria-label="Trusted by">
+        <div class="section-inner">
+          <p class="trusted-title">为这些日常工作流而做</p>
+          <div class="logos">
+            <span class="logo-word"><i class="logo-dot"></i>Terminal</span>
+            <span class="logo-word"><i class="logo-dot"></i>Xcode</span>
+            <span class="logo-word"><i class="logo-dot"></i>Codex</span>
+            <span class="logo-word"><i class="logo-dot"></i>Cursor</span>
+            <span class="logo-word"><i class="logo-dot"></i>Claude</span>
+            <span class="logo-word"><i class="logo-dot"></i>GitHub</span>
+            <span class="logo-word"><i class="logo-dot"></i>Dia</span>
+            <span class="logo-word"><i class="logo-dot"></i>Raycast</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section intersection">
+        <div class="section-inner">
+          <div class="center-head">
+            <h2>复制到粘贴，中间少一次打断。</h2>
+            <p>按快捷键呼出 Bufferly，搜索最近剪贴板，回车写回并可选粘贴到上一应用。</p>
+          </div>
+          <div class="touch-scene" aria-hidden="true">
+            <span class="ai-stream"></span>
+            <img class="floating-clip-card" src="assets/bufferly-text-card.png" alt="" />
+            <span class="star"></span>
+            <img class="hand" src="assets/asset-08.png" alt="" />
+            <span class="ai-caption">Option Space</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section capabilities" id="features">
+        <div class="section-inner">
+          <div class="center-head">
+            <span class="label-pill">信任系统</span>
+            <h2>核心能力都围绕本地可信。</h2>
+            <p>Bufferly 不做重型素材库，只把开发者每天复制的上下文变得可找回、可复用、可保护。</p>
+          </div>
+
+          <div class="feature-grid">
+            <article class="feature-card">
+              <div class="feature-art cyan">░▓▓▓▓▓▓▓▓▒
+░▓▓▒▒▒▒▒▒▒▒▒▒▓▓▓
+▓▓▒░        ░▒▓▓░
+░▒▒░  ▒▓▓▓▓▓▓▒  ▓▓▒
+▒▒░ ▒▓▓▓▓▓▓▓▓▓▓▒░
+▒▓▒ ▒▓░ ░▓▒▓▓▓▓▒</div>
+              <div class="feature-copy">
+                <h3>剪贴板历史</h3>
+                <p>自动监听文本变化，去重保存最近历史，500 条内快速搜索。</p>
+              </div>
+            </article>
+
+            <article class="feature-card">
+              <div class="feature-art magenta">▓▓▓▓▓▓
+  ▓▓▒▒▓▓
+   ▒▓▓▒
+    ▓▓▓▓
+      ▓▓▒▒
+        ▓▓▓
+▒▓▓▓▓▓▓▓▓</div>
+              <div class="feature-copy">
+                <h3>常用片段 Pin</h3>
+                <p>把 prompt、命令和模板固定在手边，呼出后直接搜索粘贴。</p>
+              </div>
+            </article>
+
+            <article class="feature-card">
+              <div class="feature-art mint">░▒▓▓▓▓▓▒░
+▒▓▓░░░░▓▓▒
+▓▓▒  ▓▓  ▒▓
+▓▓▒      ▒▓
+▒▓▓▓▓▓▓▓▓▒
+  ▒▒▒▒▒▒</div>
+              <div class="feature-copy">
+                <h3>类型识别</h3>
+                <p>自动识别 URL、JSON、命令、代码、Email 和普通文本。</p>
+              </div>
+            </article>
+
+            <article class="feature-card">
+              <div class="feature-art amber">   ▓▓▓▓
+ ▓▓▒  ▒▓▓
+▓▓      ▓▓
+▓▓  ▓▓  ▓▓
+ ▓▓▒▒▒▒▓▓
+   ▓▓▓▓
+ ░▒▓▓▓▓▒░</div>
+              <div class="feature-copy">
+                <h3>敏感过滤</h3>
+                <p>命中 token、password、验证码、.env value 时默认不保存明文。</p>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section ecosystem">
+        <div class="section-inner">
+          <div class="center-head">
+            <h2>为开发者的复制流而生</h2>
+            <p>连接 IDE、终端、浏览器和 AI 工具之间的临时上下文。</p>
+          </div>
+          <div class="ecosystem-map" aria-hidden="true">
+            <span class="ecosystem-glow"></span>
+            <span class="orbit-label">IDE / Editor</span>
+            <span class="orbit-label">Terminal</span>
+            <span class="orbit-label">AI Coding Tools</span>
+            <span class="orbit-label">Browser</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section tiers" id="pricing">
+        <div class="section-inner">
+          <div class="center-head">
+            <h2>从复制到粘贴的工作流</h2>
+            <p>Bufferly 的目标不是保存很多东西，而是在需要时快速找回、选择、写回。</p>
+          </div>
+
+          <div class="tier-stack">
+            <article class="tier-row" data-tier="步骤 1">
+              <div class="tier-main">
+                <div>
+                  <span>Option Space</span>
+                  <h3>呼出工作台</h3>
+                  <p>面板贴近当前工作流出现，默认聚焦搜索框。</p>
+                </div>
+                <div class="price">200ms <a class="button dark" href="#contact">快速呼出</a></div>
+              </div>
+              <div class="checklist">
+                <span>全局快捷键显示 / 隐藏</span>
+                <span>菜单栏入口可随时打开</span>
+                <span>低打扰浮层窗口</span>
+                <span>不需要切换到重型应用</span>
+              </div>
+            </article>
+
+            <article class="tier-row" data-tier="步骤 2">
+              <div class="tier-main">
+                <div>
+                  <span>Search</span>
+                  <h3>搜索上下文</h3>
+                  <p>按关键词、类型和来源过滤最近复制过的内容。</p>
+                </div>
+                <div class="price">500 条 <a class="button dark" href="#contact">实时搜索</a></div>
+              </div>
+              <div class="checklist">
+                <span>模糊搜索最近历史</span>
+                <span>一眼区分 URL、CMD、JSON</span>
+                <span>Pinned 片段也参与过滤</span>
+                <span>键盘上下选择结果</span>
+              </div>
+            </article>
+
+            <article class="tier-row" data-tier="步骤 3">
+              <div class="tier-main">
+                <div>
+                  <span>Return</span>
+                  <h3>写回剪贴板</h3>
+                  <p>回车复制选中内容，并可选粘贴回上一个前台 App。</p>
+                </div>
+                <div class="price">1 次 <small>确认</small> <a class="button dark" href="#contact">完成粘贴</a></div>
+              </div>
+              <div class="checklist">
+                <span>Return 默认写回剪贴板</span>
+                <span>可选自动粘贴到上一应用</span>
+                <span>无权限时仍能完成复制</span>
+                <span>粘贴后面板自动隐藏</span>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section outcomes" id="case-studies">
+        <div class="section-inner">
+          <div class="center-head">
+            <h2>适合每天高频复制的人</h2>
+            <p>Bufferly 优先服务开发者、AI heavy user，以及在多个应用之间搬运上下文的人。</p>
+          </div>
+
+          <div class="case-grid">
+            <article class="case-card">
+              <div>
+                <h3>找回刚刚复制过的命令</h3>
+                <p>刚从文档复制了一条命令，又被下一段内容覆盖。呼出 Bufferly，搜关键词，回车粘贴回终端。</p>
+              </div>
+              <div class="person">
+                <img src="assets/asset-02.png" alt="" />
+                <span><strong>Terminal</strong><small>命令、日志、branch name</small></span>
+              </div>
+            </article>
+
+            <article class="case-card">
+              <div>
+                <h3>复用常用 prompt</h3>
+                <p>把高频 prompt、改写模板和调试上下文 pin 住，需要时直接贴进 Claude、Cursor、Codex。</p>
+              </div>
+              <div class="person">
+                <img src="assets/asset-03.png" alt="" />
+                <span><strong>AI tools</strong><small>Prompt、上下文、模板</small></span>
+              </div>
+            </article>
+
+            <article class="case-card">
+              <div>
+                <h3>避免留下敏感明文</h3>
+                <p>复制 token、验证码、.env value 时，命中规则后默认过滤或脱敏展示，不把风险写进历史。</p>
+              </div>
+              <div class="person">
+                <img src="assets/asset-04.png" alt="" />
+                <span><strong>Privacy</strong><small>Secrets、Keychain、排除 App</small></span>
+              </div>
+            </article>
+          </div>
+
+          <article class="case-highlight">
+            <div class="highlight-image">
+              <img src="assets/asset-03.png" alt="" />
+            </div>
+            <div class="highlight-copy">
+              <div class="person">
+                <span><strong>Local-first by default</strong><small>SQLite / Keychain / opt-in network</small></span>
+              </div>
+              <p>"Bufferly 的边界很明确：历史记录默认只在本机，链接预览默认关闭，敏感内容先过滤。它不是云剪贴板，也不是另一个命令历史，而是一个随时可呼出、完成任务、立刻消失的 macOS 工作台。"</p>
+              <p><a class="button dark" href="#case-studies">查看源码</a></p>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="section faq">
+        <div class="section-inner faq-grid">
+          <div class="faq-title">
+            <h2>常见问题</h2>
+            <p>关于本地存储、敏感过滤、自动粘贴和 AI 路线图的几个关键问题。</p>
+            <a class="email-link" href="mailto:support@stackgrid.framer.website">github.com/Innate-Labs/bufferly</a>
+          </div>
+
+          <div class="faq-list">
+            <details>
+              <summary>剪贴板历史会上传到云端吗？</summary>
+              <p>不会。Bufferly 默认把历史保存在本机 SQLite，不需要账号，也不依赖云同步。</p>
+            </details>
+            <details>
+              <summary>敏感内容会被保存吗？</summary>
+              <p>命中 token、password、验证码、.env value 等规则后，默认不保存明文，或只展示脱敏占位。</p>
+            </details>
+            <details>
+              <summary>没有辅助功能权限还能用吗？</summary>
+              <p>可以。自动粘贴到上一应用需要 macOS 辅助功能权限；没有权限时，至少会把内容写回剪贴板。</p>
+            </details>
+            <details>
+              <summary>支持哪些内容类型？</summary>
+              <p>MVP 重点识别 URL、Email、JSON、Shell command、Code-like text 和普通文本。</p>
+            </details>
+            <details>
+              <summary>AI 功能会不会把数据外发？</summary>
+              <p>路线图会增强 AI 工作流，但方向是本地优先、用户可控；联网预览和外部能力默认都应是 opt-in。</p>
+            </details>
+          </div>
+        </div>
+      </section>
+
+      <section class="section cta" id="contact">
+        <div class="section-inner cta-grid">
+          <div class="cta-copy">
+            <h2>在你的 Mac 上试用 Bufferly。</h2>
+            <p>免费、开源、Swift 原生。MVP 仍在快速迭代，建议从 GitHub release 或源码构建开始。</p>
+            <div class="cta-list">
+              <span>本地保存剪贴板历史</span>
+              <span>敏感内容过滤默认开启</span>
+              <span>快捷键呼出，回车粘贴</span>
+            </div>
+          </div>
+          <div class="cta-panel" aria-hidden="true"></div>
+        </div>
+      </section>
+
+      <footer class="section footer">
+        <div class="section-inner">
+          <div class="footer-brand">
+            <h3>Bufferly</h3>
+            <p>本地优先的 macOS 剪贴板工作台，面向开发者、AI 重度用户和每天需要反复复制上下文的人。</p>
+          </div>
+          <div class="footer-list">
+            <h4>Product</h4>
+            <a href="#about">信任系统</a>
+            <a href="#about">本地优先</a>
+            <a href="#pricing">工作流</a>
+            <a href="#case-studies">隐私</a>
+            <a href="#contact">下载</a>
+          </div>
+          <div class="footer-list">
+            <h4>Open Source</h4>
+            <a href="#contact">GitHub</a>
+            <a href="#contact">Issues</a>
+            <a href="#contact">Releases</a>
+            <a href="#contact">Privacy notes</a>
+          </div>
+          <div class="socials" aria-hidden="true">
+            <span>f</span><span>in</span><span>x</span>
+          </div>
+          <p class="copyright">© Bufferly. Built for local-first workflows.</p>
+          <span class="footer-mark" aria-hidden="true"></span>
+        </div>
+      </footer>
+    </main>
+  </body>
+</html>

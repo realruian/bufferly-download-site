@@ -320,6 +320,14 @@
         display: block;
       }
 
+      .hero-shot-caption {
+        margin: 14px auto 0;
+        color: #6c6c6c;
+        font-size: 13px;
+        line-height: 20.8px;
+        text-align: center;
+      }
+
       .trusted {
         min-height: 166px;
       }
@@ -1434,6 +1442,7 @@
             <span class="corner br"></span>
             <img class="hero-product-shot" src="assets/bufferly-clipboard-panel.png" alt="" />
           </div>
+          <p class="hero-shot-caption">搜索最近剪贴板 · Pin 常用片段 · 回车写回剪贴板</p>
         </div>
       </section>
 
@@ -1538,15 +1547,15 @@
       <section class="section ecosystem">
         <div class="section-inner">
           <div class="center-head">
-            <h2>为开发者的复制流而生</h2>
-            <p>连接 IDE、终端、浏览器和 AI 工具之间的临时上下文。</p>
+            <h2>在工具之间接住临时上下文</h2>
+            <p>从 IDE、终端、浏览器到 AI 编码工具，Bufferly 把刚复制过的命令、URL、JSON 和 prompt 留在本机，随时可搜回。</p>
           </div>
           <div class="ecosystem-map" aria-hidden="true">
             <span class="ecosystem-glow"></span>
-            <span class="orbit-label">IDE / Editor</span>
-            <span class="orbit-label">Terminal</span>
-            <span class="orbit-label">AI Coding Tools</span>
-            <span class="orbit-label">Browser</span>
+            <span class="orbit-label">IDE: 组件名、错误信息、PRD 片段</span>
+            <span class="orbit-label">Terminal: 命令、日志、branch name</span>
+            <span class="orbit-label">AI tools: prompt、上下文、回复片段</span>
+            <span class="orbit-label">Browser: URL、文档、验证码</span>
           </div>
         </div>
       </section>
@@ -1663,8 +1672,8 @@
               <div class="person">
                 <span><strong>Local-first by default</strong><small>SQLite / Keychain / opt-in network</small></span>
               </div>
-              <p>"Bufferly 的边界很明确：历史记录默认只在本机，链接预览默认关闭，敏感内容先过滤。它不是云剪贴板，也不是另一个命令历史，而是一个随时可呼出、完成任务、立刻消失的 macOS 工作台。"</p>
-              <p><a class="button dark" href="#case-studies">查看源码</a></p>
+              <p>"Bufferly 的边界很明确：历史记录默认只写入本机 SQLite，不需要账号；敏感内容先过滤，链接预览和外部能力默认 opt-in。它不是云剪贴板，也不是另一个命令历史，而是一个随时可呼出、完成任务、立刻消失的 macOS 工作台。"</p>
+              <p><a class="button dark" href="https://github.com/Innate-Labs/bufferly" target="_blank" rel="noreferrer">查看源码</a></p>
             </div>
           </article>
         </div>
@@ -1675,7 +1684,7 @@
           <div class="faq-title">
             <h2>常见问题</h2>
             <p>关于本地存储、敏感过滤、自动粘贴和 AI 路线图的几个关键问题。</p>
-            <a class="email-link" href="mailto:support@stackgrid.framer.website">github.com/Innate-Labs/bufferly</a>
+            <a class="email-link" href="https://github.com/Innate-Labs/bufferly" target="_blank" rel="noreferrer">github.com/Innate-Labs/bufferly</a>
           </div>
 
           <div class="faq-list">
@@ -1712,9 +1721,9 @@
               <a class="button dark" href="assets/Bufferly.dmg" download="Bufferly.dmg">下载 Bufferly</a>
             </div>
             <div class="cta-list">
-              <span>本地保存剪贴板历史</span>
+              <span>SQLite 本地保存剪贴板历史</span>
+              <span>不需要账号，也不依赖云同步</span>
               <span>敏感内容过滤默认开启</span>
-              <span>快捷键呼出，回车粘贴</span>
             </div>
           </div>
         </div>
@@ -1736,9 +1745,9 @@
           </div>
           <div class="footer-list">
             <h4>Open Source</h4>
-            <a href="#contact">GitHub</a>
-            <a href="#contact">Issues</a>
-            <a href="#contact">Releases</a>
+            <a href="https://github.com/Innate-Labs/bufferly" target="_blank" rel="noreferrer">GitHub</a>
+            <a href="https://github.com/Innate-Labs/bufferly/issues" target="_blank" rel="noreferrer">Issues</a>
+            <a href="https://github.com/Innate-Labs/bufferly/releases" target="_blank" rel="noreferrer">Releases</a>
             <a href="#contact">Privacy notes</a>
           </div>
           <div class="socials" aria-hidden="true">
